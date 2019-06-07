@@ -14,6 +14,10 @@
 #include <QTime>
 #include <QtSerialPort/QSerialPort>
 #include <QtSerialPort/QSerialPortInfo>
+#include <string>
+#include <shellapi.h>
+#include <fstream>>
+
 #pragma comment(lib, "WINMM.LIB")
 
 //thread test
@@ -55,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->setPalette(palette);
 
     serial = new QSerialPort;
-    serial->setPortName("COM6");
+    serial->setPortName("COM7");
     serial->open(QIODevice::ReadWrite);
     serial->setBaudRate(QSerialPort::Baud9600);
 
@@ -65,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->pushButton_2,SIGNAL(clicked()),this,SLOT(breakLoop()));
     connect(ui->pushButton_3,SIGNAL(clicked()),this,SLOT(report()));
     connect(ui->pushButton_4,SIGNAL(clicked()),this,SLOT(grade()));
+
     QMovie *movie1 = new QMovie("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\greeting1.gif");
     ui->label1->setMovie(movie1);
     movie1->start();
@@ -81,8 +86,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->label_report->hide();
     ui->estlabel->hide();
     ui->est->hide();
-
-
+    ui->label_report_2->hide();
+    ui->estlabel_2->hide();
+    ui->label_report_3->hide();
+    ui->label_report_4->hide();
+    ui->label_report_5->hide();
+    ui->label_report_6->hide();
+    ui->label_report_7->hide();
+    ui->pushButton_5->hide();
+    ui->pushButton_6->hide();
+    ui->pushButton_7->hide();
+    ui->standard->hide();
 }
 
 
@@ -124,6 +138,11 @@ void MainWindow::waitReady()
     PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\2ready.wav"),NULL,SND_FILENAME | SND_ASYNC);
 }
 
+void MainWindow::waitJudge()
+{
+    PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\4judge.wav"),NULL,SND_FILENAME | SND_ASYNC);
+}
+
 void MainWindow::breakLoop()
 {
     timer->stop();
@@ -133,7 +152,7 @@ void MainWindow::breakLoop()
     PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(7000);
     connect(timer2, SIGNAL(timeout()), this, SLOT(barUpdate()));
-    timer2->start(20);
+    timer2->start(200);
     savePics();
 }
 
@@ -150,8 +169,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::gradeBarUpdate()
+{
+    std::string str;
+    std::ifstream OpenFile("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judgeProgress.txt");
+    OpenFile >> str;
+    OpenFile.close();
+    ui->progressBar->setValue(atoi(str.c_str()));
+    if ((atoi(str.c_str()))==589) {
+        ui->progressBar->move(280,500);
+        report();
+    }
+}
+
 void MainWindow::grade()
 {
+    //Change GUI
     ui->label->hide();
     ui->label2->hide();
     ui->label1->hide();
@@ -159,25 +192,175 @@ void MainWindow::grade()
     ui->estlabel->show();
     ui->progressBar->show();
     ui->progressBar->setValue(0);
-    for (int i=1;i<500;++i){
-        sleep(10);
+    ui->estlabel->hide();
+    ui->progressBar->move(280,330);
+
+    //play sound
+    waitJudge();
+    connect(timer5, SIGNAL(timeout()), this, SLOT(waitJudge()));
+    timer5->start(7000);
+
+    //save imgs
+    if (!his.empty())for (int i=1;i<50;++i){
         std::string res;
         std::stringstream ss;
         ss << i;
         res = ss.str();
-        cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
-        ui->estlabel->setPixmap(QPixmap::fromImage(MatToQImage(frame)));
         ui->progressBar->setValue(ui->progressBar->value()+1);
+        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\data\\mpii\\images\\"+res+".jpg",his[i]);
+        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\input\\"+res+".jpg",his[i]);
     }
-    report();
+
+    //Start bar
+
+    std::ofstream OpenFile("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judgeProgress.txt");
+    OpenFile << "50";
+    OpenFile.close();
+    connect(timer3, SIGNAL(timeout()), this, SLOT(gradeBarUpdate()));
+    timer3->start(200);
+
+    //start judge
+    //system("C:\\Users\\cityscience\\Documents\\bowbow\\judge.bat");
+    WinExec("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judge.bat",0);
+}
+
+void MainWindow::display()
+{
+    curPicIndex++;
+    if (curPicIndex==50) curPicIndex=1;
+    std::string res;
+    std::stringstream ss;
+    ss << curPicIndex;
+    res = ss.str();
+    cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->estlabel->width();
+        int height = ui->estlabel->height();
+        //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+        QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->estlabel->setPixmap(fitpixmap);
+}
+
+QString str2qstr(const std::string str)
+{
+    return QString::fromLocal8Bit(str.data());
 }
 
 void MainWindow::report()
 {
+    //stop timer
+    timer3->stop();
+    timer5->stop();
+    //change GUI
     ui->progressBar->hide();
     ui->label_report->show();
+    ui->label->hide();
+    ui->label1->hide();
+    ui->label2->hide();
     ui->estlabel->hide();
     ui->est->hide();
+    ui->label_report_2->show();
+    ui->estlabel_2->show();
+    ui->label_report_3->show();
+    ui->label_report_4->show();
+    ui->label_report_5->show();
+    ui->label_report_6->show();
+    ui->label_report_7->show();
+    ui->pushButton_5->show();
+    ui->pushButton_6->show();
+    ui->pushButton_7->show();
+
+    //report 2 content (Review active)
+    curPicIndex=1;
+    connect(timer4, SIGNAL(timeout()), this, SLOT(display()));
+    timer4->start(200);
+
+    //report 1 content
+    std::string res,index,score;
+    std::stringstream ss;
+    std::ifstream OpenFile("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\bestpose.txt");
+    OpenFile >> score >> index;
+    cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->estlabel_2->width();
+        int height = ui->estlabel_2->height();
+        //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+        QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->estlabel_2->setPixmap(fitpixmap);
+    std::string content;
+    ui->label_report_2->setText(ui->label_report_2->text()+str2qstr(score+"/100"));
+    OpenFile >> score;
+    ui->label_report_3->setText(ui->label_report_3->text()+str2qstr(score));
+    OpenFile >> score;
+    ui->label_report_4->setText(ui->label_report_4->text()+str2qstr(score));
+    OpenFile >> score;
+    ui->label_report_5->setText(ui->label_report_5->text()+str2qstr(score));
+    OpenFile >> score;
+    ui->label_report_6->setText(ui->label_report_6->text()+str2qstr(score));
+    OpenFile >> score;
+    ui->label_report_7->setText(ui->label_report_7->text()+str2qstr(score));
+
+    //report 3 content
+    QMovie *movie3 = new QMovie("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\greeting3.gif");
+    movie3->setScaledSize(ui->standard->size());
+    ui->standard->setMovie(movie3);
+    movie3->start();
+    //connect(timer6, SIGNAL(timeout()), this, SLOT(adjustSpeed()));
+    //timer6->start(200);
+
+
+    //label_report_2
+    connect(ui->pushButton_7, SIGNAL(clicked()), this, SLOT(report1()));
+    connect(ui->pushButton_6, SIGNAL(clicked()), this, SLOT(report2()));
+    connect(ui->pushButton_5, SIGNAL(clicked()), this, SLOT(report3()));
+}
+
+void MainWindow::adjustSpeed()
+{
+    if (ui->standard->isVisible())
+        movie3->setSpeed(100);
+}
+
+void MainWindow::report1()
+{
+    ui->estlabel->hide();
+    ui->estlabel_2->show();
+    ui->label_report_2->show();
+    ui->label_report_3->show();
+    ui->label_report_4->show();
+    ui->label_report_5->show();
+    ui->label_report_6->show();
+    ui->label_report_7->show();
+    ui->standard->hide();
+    ui->label_report->show();
+}
+
+void MainWindow::report2()
+{
+    ui->estlabel->show();
+    ui->estlabel_2->hide();
+    ui->label_report_2->hide();
+    ui->label_report_3->hide();
+    ui->label_report_4->hide();
+    ui->label_report_5->hide();
+    ui->label_report_6->hide();
+    ui->label_report_7->hide();
+    ui->standard->hide();
+    ui->label_report->show();
+}
+
+void MainWindow::report3()
+{
+    ui->estlabel->hide();
+    ui->estlabel_2->hide();
+    ui->label_report_2->hide();
+    ui->label_report_3->hide();
+    ui->label_report_4->hide();
+    ui->label_report_5->hide();
+    ui->label_report_6->hide();
+    ui->label_report_7->hide();
+    ui->label_report->hide();
+    ui->standard->show();
 }
 
 void MainWindow::savePics()
@@ -189,20 +372,13 @@ void MainWindow::savePics()
         capture >> frame;
         his.push_back(frame);
         cv::imshow("1",frame);
-        cv::waitKey(20);
-        if (count==500) {
+        cv::waitKey(200);
+        if (count==50) {
             timer2->stop();
             break;
         }
     }
-    for (int i=1;i<500;++i){
-        std::string res;
-        std::stringstream ss;
-        ss << i;
-        res = ss.str();
-        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\data\\mpii\\images\\"+res+".jpg",his[i]);
-        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\input\\"+res+".jpg",his[i]);
-    }
+    cv::destroyAllWindows();
     grade();
 }
 
@@ -220,7 +396,16 @@ void MainWindow::testTwoCam()
     }
 }
 
+LPCWSTR stringToLPCWSTR(std::string orig)
+{
+    size_t origsize = orig.length() + 1;
+        const size_t newsize = 100;
+        size_t convertedChars = 0;
+    wchar_t *wcstring = (wchar_t *)malloc(sizeof(wchar_t)*(orig.length()-1));
+    mbstowcs_s(&convertedChars, wcstring, origsize, orig.c_str(), _TRUNCATE);
 
+    return wcstring;
+}
 
 QImage MainWindow::MatToQImage(cv::Mat mtx)
 {
