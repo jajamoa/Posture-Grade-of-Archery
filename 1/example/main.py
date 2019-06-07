@@ -36,6 +36,7 @@ dataset_names = sorted(name for name in datasets.__dict__
 
 
 # init global variables
+count=50
 best_acc = 0
 idx = []
 print(torch.cuda.is_available())
@@ -267,17 +268,27 @@ def validate(val_loader, model, criterion, num_classes, debug=False, flip=True):
     gt_win, pred_win = None, None
     end = time.time()
     bar = Bar('Eval ', max=len(val_loader))
-    print('bbbb')
+    #print('bbbb')
+
+
     with torch.no_grad():
-        print('ccc')
+        #print('ccc')
         for i, (input,meta1) in enumerate(val_loader):
             # measure data loading time
-            print(input)
+            #print(input)
             data_time.update(time.time() - end)
-            print('aaa')
+            #print('aaa')
             input = input.to(device, non_blocking=True)
             #target = target.to(device, non_blocking=True)
             #target_weight = meta['target_weight'].to(device, non_blocking=True)
+
+            # log write
+            global count
+            object = open("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judgeProgress.txt", "w")
+            object.write(str(count))
+            print(count)
+            count = count + 10
+            object.close()
 
             # compute output
             output = model(input)
@@ -301,13 +312,13 @@ def validate(val_loader, model, criterion, num_classes, debug=False, flip=True):
                 #gt_batch_img = batch_with_heatmap(input, target)
                 pred_batch_img = batch_with_heatmap(input, score_map)
                 if not gt_win or not pred_win:
-                    print('hah')
+                    #print('hah')
                     plt.subplot(121)
                     #gt_win = plt.imshow(gt_batch_img)
                     plt.subplot(122)
                     pred_win = plt.imshow(pred_batch_img)
                 else:
-                    print('wow')
+                    #print('wow')
                     gt_win.set_data(gt_batch_img)
                     pred_win.set_data(pred_batch_img)
                 #plt.pause(.5)
