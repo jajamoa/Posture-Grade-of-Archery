@@ -7,12 +7,16 @@
 #include <sstream>
 #include <vector>
 #include <Windows.h>
+#include <Winbase.h>
 #include <MMsystem.h>
 #include <QThread>
 #include <QDebug>
 #include <QTime>
+#include <QtSerialPort/QSerialPort>
+#include <QtSerialPort/QSerialPortInfo>
 #pragma comment(lib, "WINMM.LIB")
 
+//thread test
 class MyThread : public QThread {
      public:
          virtual void run();
@@ -26,8 +30,35 @@ class MyThread : public QThread {
          }
      }
 
+void sleep(unsigned int msec)
+{
+    QTime dieTime = QTime::currentTime().addMSecs(msec);
+    while( QTime::currentTime() < dieTime )
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    //available ports
+    QStringList m_serialPortName;
+    foreach(const QSerialPortInfo &info,QSerialPortInfo::availablePorts())
+    {
+        m_serialPortName << info.portName();
+        qDebug()<<"serialPortName:"<<info.portName();
+    }
+
+
+    QPalette palette(this->palette());
+    palette.setColor(QPalette::Background, Qt::black);
+    palette.setColor(QPalette::Text, Qt::white);
+    palette.setColor(QPalette::WindowText, Qt::white);
+    this->setPalette(palette);
+
+    serial = new QSerialPort;
+    serial->setPortName("COM6");
+    serial->open(QIODevice::ReadWrite);
+    serial->setBaudRate(QSerialPort::Baud9600);
+
     count = 0;
     ui->setupUi(this);
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(greeting()));
@@ -50,14 +81,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->label_report->hide();
     ui->estlabel->hide();
     ui->est->hide();
+
+
 }
 
-void sleep(unsigned int msec)
-{
-    QTime dieTime = QTime::currentTime().addMSecs(msec);
-    while( QTime::currentTime() < dieTime )
-    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-}
 
 void MainWindow::greeting()
 {
@@ -65,6 +92,31 @@ void MainWindow::greeting()
     sleep(5*1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(waitReady()));
     timer->start(7000);
+
+
+    int X=0;
+    QByteArray buf;
+    buf = serial->readAll();
+    buf.clear();
+    while (1){
+        ++X;
+        if (X>1000) break;
+        QString str;
+        buf = serial->readAll();
+        if(!buf.isEmpty()) qDebug()<<buf;
+        str=buf;
+        if (str.indexOf('.')>=3 && str[0]!='-') {
+            qDebug()<<"!!!";
+            break;
+        }
+        buf.clear();
+        sleep(1000);
+    }
+    serial->clear();
+    serial->close();
+    serial->deleteLater();
+
+    breakLoop();
 }
 
 void MainWindow::waitReady()
@@ -80,8 +132,8 @@ void MainWindow::breakLoop()
     ui->progressBar->show();
     PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(7000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(barUpdate()));
-    timer->start(20);
+    connect(timer2, SIGNAL(timeout()), this, SLOT(barUpdate()));
+    timer2->start(20);
     savePics();
 }
 
@@ -90,7 +142,7 @@ void MainWindow::barUpdate()
     if (ui->progressBar->value()<500) {
         ui->progressBar->setValue(ui->progressBar->value()+1);
     }
-    else timer->stop();
+    else timer2->stop();
 }
 
 MainWindow::~MainWindow()
@@ -113,7 +165,7 @@ void MainWindow::grade()
         std::stringstream ss;
         ss << i;
         res = ss.str();
-        cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Documents\\bowbow\\img\\img"+res+".jpg");
+        cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
         ui->estlabel->setPixmap(QPixmap::fromImage(MatToQImage(frame)));
         ui->progressBar->setValue(ui->progressBar->value()+1);
     }
@@ -139,7 +191,7 @@ void MainWindow::savePics()
         cv::imshow("1",frame);
         cv::waitKey(20);
         if (count==500) {
-            timer->stop();
+            timer2->stop();
             break;
         }
     }
@@ -148,7 +200,8 @@ void MainWindow::savePics()
         std::stringstream ss;
         ss << i;
         res = ss.str();
-        cv::imwrite("C:\\Users\\cityscience\\Documents\\bowbow\\img\\img"+res+".jpg",his[i]);
+        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\data\\mpii\\images\\"+res+".jpg",his[i]);
+        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\input\\"+res+".jpg",his[i]);
     }
     grade();
 }

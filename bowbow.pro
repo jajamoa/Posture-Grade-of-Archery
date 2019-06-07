@@ -42,7 +42,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 INCLUDEPATH += C:\opencv\opencv\build\include
 INCLUDEPATH += C:\opencv\opencv\build\include\opencv
 INCLUDEPATH += C:\opencv\opencv\build\include\opencv2
-
+QT       += serialport
 CONFIG(debug, debug|release): {
 LIBS += -LC:\opencv\opencv\build\x86\vc14\lib \
 -lopencv_core2413d \

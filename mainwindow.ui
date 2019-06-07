@@ -156,27 +156,6 @@
      <string>测 试 报 告</string>
     </property>
    </widget>
-   <widget class="QLabel" name="est">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>20</y>
-      <width>281</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>微软雅黑</family>
-      <pointsize>29</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>分 析 评 分 中</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
@@ -196,10 +175,10 @@
    <widget class="QLabel" name="estlabel">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>130</y>
-      <width>400</width>
-      <height>300</height>
+      <x>220</x>
+      <y>120</y>
+      <width>691</width>
+      <height>441</height>
      </rect>
     </property>
     <property name="font">
@@ -213,6 +192,89 @@
     <property name="textFormat">
      <enum>Qt::PlainText</enum>
     </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>10</y>
+      <width>339</width>
+      <height>147</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="est">
+         <property name="font">
+          <font>
+           <family>微软雅黑</family>
+           <pointsize>29</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>分 析 评 分 中</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
