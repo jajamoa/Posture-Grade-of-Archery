@@ -1,2 +1,2 @@
 # Posture-Grade-of-Archery
-Programming UI with Qt, recognizing posture with VGGNet 
+Programming UI with Qt, recognizing posture with ResNet50 
