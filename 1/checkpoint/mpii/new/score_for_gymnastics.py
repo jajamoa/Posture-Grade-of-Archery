@@ -30,7 +30,10 @@ def topangle_socre(weight):
         v2x = m['preds'][i-1][14][0] - m['preds'][i-1][9][0]
         v1y = m['preds'][i-1][11][1] - m['preds'][i-1][9][1]
         v2y = m['preds'][i-1][14][1] - m['preds'][i-1][9][1]
-        tmp_angle = abs(math.acos((v1x*v2x+v1y*v2y)/(math.sqrt(pow(v1x, 2)+pow(v1y, 2))*math.sqrt(pow(v2x, 2)+pow(v2y, 2)))))
+        if (v1x==v2x and v1y==v2y) is False:
+            tmp_angle = abs(math.acos((v1x*v2x+v1y*v2y)/(math.sqrt(pow(v1x, 2)+pow(v1y, 2))*math.sqrt(pow(v2x, 2)+pow(v2y, 2)))))
+        else:
+            tmp_angle = 0
         angle = (math.pi - tmp_angle)/2
         return weight*angle
 
