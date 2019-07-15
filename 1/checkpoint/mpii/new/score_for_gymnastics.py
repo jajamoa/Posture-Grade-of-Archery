@@ -19,18 +19,20 @@ def relu(v):
 def bend_score(y1, y2, x1, x2, weight):
     punish_angle = 0.25
     angle = abs(math.atan(abs(y1 - y2) / abs(x1 - x2)))
+    if (x1==x2):
+        angle = abs(math.atan(abs(y1 - y2) / 0.0001))
     if angle <= punish_angle:
         return 2*weight*abs(punish_angle-angle)
     return math.pi/4 - angle
 
 def topangle_socre(weight):
-		v1x = m['preds'][i-1][11][0] - m['preds'][i-1][9][0]
-		v2x = m['preds'][i-1][14][0] - m['preds'][i-1][9][0]
-		v1y = m['preds'][i-1][11][1] - m['preds'][i-1][9][1]
-		v2y = m['preds'][i-1][14][1] - m['preds'][i-1][9][1]
-		tmp_angle = abs(math.acos((v1x*v2x+v1y*v2y)/(math.sqrt(pow(v1x, 2)+pow(v1y, 2))*math.sqrt(pow(v2x, 2)+pow(v2y, 2)))))
-		angle = (math.pi - tmp_angle)/2
-		return weight*angle
+        v1x = m['preds'][i-1][11][0] - m['preds'][i-1][9][0]
+        v2x = m['preds'][i-1][14][0] - m['preds'][i-1][9][0]
+        v1y = m['preds'][i-1][11][1] - m['preds'][i-1][9][1]
+        v2y = m['preds'][i-1][14][1] - m['preds'][i-1][9][1]
+        tmp_angle = abs(math.acos((v1x*v2x+v1y*v2y)/(math.sqrt(pow(v1x, 2)+pow(v1y, 2))*math.sqrt(pow(v2x, 2)+pow(v2y, 2)))))
+        angle = (math.pi - tmp_angle)/2
+        return weight*angle
 
 # point_1 should over p2 means y1 should < y2
 # distance in range of 0 to 100
@@ -43,6 +45,8 @@ def over_head_score(y1, y2, weight):
 
 def vertical_score(y1, y2, x1, x2, weight):
         angle = abs(math.atan(abs(y1 - y2)/abs(x1 - x2)))
+        if (x1 == x2):
+            angle = abs(math.atan(abs(y1 - y2) / 0.0001))
         if(abs(angle)<=0.125):
             return 0
         return weight*(abs(angle)-0.125)
@@ -62,10 +66,12 @@ def distance_score(y1, y2, x1, x2, weight):
     return ans
 
 def level_score(y1, y2, x1, x2, weight):
-		angle = abs(math.atan(abs(x1-x2)/abs(y1-y2)))
-		if(angle <= 0.125):
-			return 0
-		return weight*(abs(angle)-0.125)
+        angle = abs(math.atan(abs(x1-x2)/abs(y1-y2)))
+        if (y1 == y2):
+            angle = abs(math.atan(abs(x1-x2)/0.0001))
+        if(angle <= 0.125):
+           return 0
+        return weight*(abs(angle)-0.125)
 
 def arm_line_score(weight):
     v1x = m['preds'][i-1][11][0] - m['preds'][i-1][12][0]
@@ -158,7 +164,8 @@ for i in range(1,50):
     gymnastics_d[1].append(vertical_score(m['preds'][i-1][15][0],  m['preds'][i-1][14][0], m['preds'][i-1][15][1], m['preds'][i-1][14][1], wei[1]))
     gymnastics_d[1].append(vertical_score(m['preds'][i-1][9][0],  m['preds'][i-1][7][0], m['preds'][i-1][9][1], m['preds'][i-1][7][1], wei[1]))
     for value in gymnastics_d[1]:
-        gymnastics_score[1] -= value
+        if (math.isnan(value) is False):
+            gymnastics_score[1] -= value
     gymnastics_score[1]=relu(gymnastics_score[1])
     
     #pose_2
@@ -171,7 +178,8 @@ for i in range(1,50):
     gymnastics_d[2].append(vertical_score(m['preds'][i-1][1][0],  m['preds'][i-1][2][0], m['preds'][i-1][1][1], m['preds'][i-1][2][1], wei[1]))
     gymnastics_d[2].append(vertical_score(m['preds'][i-1][4][0],  m['preds'][i-1][3][0], m['preds'][i-1][4][1], m['preds'][i-1][3][1], wei[1]))
     for value in gymnastics_d[2]:
-        gymnastics_score[2] -= value
+        if (math.isnan(value) is False):
+            gymnastics_score[2] -= value
     gymnastics_score[2]=relu(gymnastics_score[2])
 
     #pose_3
@@ -184,7 +192,8 @@ for i in range(1,50):
     gymnastics_d[3].append(vertical_score(m['preds'][i-1][4][0],  m['preds'][i-1][3][0], m['preds'][i-1][4][1], m['preds'][i-1][3][1], wei[1]))
     gymnastics_d[3].append(relu(topangle_socre(wei[3]*1.5)-15)*2)
     for value in gymnastics_d[3]:
-        gymnastics_score[3] -= value
+        if (math.isnan(value) is False):
+            gymnastics_score[3] -= value
     gymnastics_score[3]=relu(gymnastics_score[3])
 
     #pose_4
@@ -194,7 +203,8 @@ for i in range(1,50):
     gymnastics_d[4].append(relu(bend_score(m['preds'][i-1][9][0],  m['preds'][i-1][7][0],m['preds'][i-1][9][1],  m['preds'][i-1][7][1],wei[4]*3)))
     gymnastics_d[4].append(relu(bend_score(m['preds'][i-1][6][0],  m['preds'][i-1][7][0],m['preds'][i-1][6][1],  m['preds'][i-1][7][1],wei[4]*3)))
     for value in gymnastics_d[4]:
-            gymnastics_score[4] -= value
+            if (math.isnan(value) is False):
+                gymnastics_score[4] -= value
     gymnastics_score[4]=relu(gymnastics_score[4])
 
     print(i,gymnastics_d[4])
