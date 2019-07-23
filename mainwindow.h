@@ -22,8 +22,8 @@ public:
     ~MainWindow();
     QImage MatToQImage(cv::Mat mtx);
     LPCWSTR stringToLPCWSTR(std::string orig);
-    void testTwoCam();
     void savePics();
+    void changeBg(int index);
 
 public slots:
     void greeting();
@@ -39,8 +39,14 @@ public slots:
     void report2();
     void report3();
     void adjustSpeed();
+    void testTwoCam();
+    void bow();
+    void gymn();
+    void shot();
+    void badm();
 
 private:
+    int cur_sport=1;
     Ui::MainWindow *ui;
     int count;
     std::vector<cv::Mat> his;

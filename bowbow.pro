@@ -26,10 +26,12 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        radiusprogressbar.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        radiusprogressbar.h
 
 FORMS += \
         mainwindow.ui
@@ -44,7 +46,7 @@ INCLUDEPATH += C:\opencv\opencv\build\include\opencv
 INCLUDEPATH += C:\opencv\opencv\build\include\opencv2
 QT       += serialport
 CONFIG(debug, debug|release): {
-LIBS += -LC:\opencv\opencv\build\x86\vc14\lib \
+LIBS += -LC:\opencv\opencv\build\x86\vc14\lib\
 -lopencv_core2413d \
 -lopencv_imgproc2413d \
 -lopencv_highgui2413d \
@@ -57,7 +59,7 @@ LIBS += -LC:\opencv\opencv\build\x86\vc14\lib \
 -lopencv_legacy2413d \
 -lopencv_flann2413d
 } else:CONFIG(release, debug|release): {
-LIBS += -LC:\opencv\opencv\build\x86\vc14\lib \
+LIBS += -LC:\opencv\opencv\build\x86\vc14\lib\
 -lopencv_core2413 \
 -lopencv_imgproc2413 \
 -lopencv_highgui2413 \

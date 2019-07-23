@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <iostream>
 #include <opencv2\opencv.hpp>
 #include <QImage>
 #include <Qmovie>
@@ -17,8 +18,12 @@
 #include <string>
 #include <shellapi.h>
 #include <fstream>>
+#include <stdio.h>
+#include <stdlib.h>
 
 #pragma comment(lib, "WINMM.LIB")
+
+
 
 //thread test
 class MyThread : public QThread {
@@ -41,6 +46,42 @@ void sleep(unsigned int msec)
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
+void MainWindow::bow()
+{
+    cur_sport=1;
+    ui->stackedWidget->setCurrentIndex(1);
+}
+void MainWindow::gymn()
+{
+    cur_sport=2;
+    ui->stackedWidget->setCurrentIndex(1);
+}
+void MainWindow::shot()
+{
+    cur_sport=3;
+    ui->stackedWidget->setCurrentIndex(1);
+}
+void MainWindow::badm()
+{
+    cur_sport=4;
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::changeBg(int index)
+{
+    char temp[] = "";
+    sprintf(temp,"%d",index);
+    std::string si(temp);
+    ui->stackedWidget->setCurrentIndex(0);
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\bg\\"+si+".jpg");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->bg->width();
+    int height = ui->bg->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->bg->setPixmap(fitpixmap);
+}
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     //available ports
@@ -50,7 +91,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         m_serialPortName << info.portName();
         qDebug()<<"serialPortName:"<<info.portName();
     }
-
 
     QPalette palette(this->palette());
     palette.setColor(QPalette::Background, Qt::black);
@@ -69,14 +109,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->pushButton_2,SIGNAL(clicked()),this,SLOT(breakLoop()));
     connect(ui->pushButton_3,SIGNAL(clicked()),this,SLOT(report()));
     connect(ui->pushButton_4,SIGNAL(clicked()),this,SLOT(grade()));
+    //connect(ui->pushButton_8, SIGNAL(clicked()), this, SLOT(testTwoCam()));
 
-    QMovie *movie1 = new QMovie("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\greeting1.gif");
+    changeBg(4);
+
+    QMovie *movie1 = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting1.gif");
     ui->label1->setMovie(movie1);
     movie1->start();
-    QMovie *movie2 = new QMovie("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\greeting2.gif");
+    QMovie *movie2 = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting2.gif");
     ui->label2->setMovie(movie2);
     movie2->start();
-    ui->progressBar->hide();
+    ui->progressBar->setMaximum(589);
+    ui->progressBar->setValue(0);
+    //ui->progressBar->hide();
     ui->label1->hide();
     ui->label2->hide();
     ui->pushButton->hide();
@@ -97,12 +142,19 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->pushButton_6->hide();
     ui->pushButton_7->hide();
     ui->standard->hide();
+    ui->pose1->hide();
+    ui->pose2->hide();
+    ui->pose3->hide();
+    ui->pose4->hide();
+    ui->label->hide();
 }
 
 
 void MainWindow::greeting()
 {
-    PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\1greeting.wav"),NULL,SND_FILENAME | SND_ASYNC);
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->label_2->setText("射箭");
+    PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\1greeting.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(5*1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(waitReady()));
     timer->start(7000);
@@ -135,31 +187,33 @@ void MainWindow::greeting()
 
 void MainWindow::waitReady()
 {
-    PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\2ready.wav"),NULL,SND_FILENAME | SND_ASYNC);
+    PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\2ready.wav"),NULL,SND_FILENAME | SND_ASYNC);
 }
 
 void MainWindow::waitJudge()
 {
-    PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\4judge.wav"),NULL,SND_FILENAME | SND_ASYNC);
+    PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\4judge.wav"),NULL,SND_FILENAME | SND_ASYNC);
 }
 
 void MainWindow::breakLoop()
 {
+    ui->stackedWidget->setCurrentIndex(2);
     timer->stop();
     ui->label1->show();
     ui->label2->show();
     ui->progressBar->show();
-    PlaySound(TEXT("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
+    PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(7000);
     connect(timer2, SIGNAL(timeout()), this, SLOT(barUpdate()));
     timer2->start(200);
+    ui->stackedWidget->setCurrentIndex(3);
     savePics();
 }
 
 void MainWindow::barUpdate()
 {
-    if (ui->progressBar->value()<500) {
-        ui->progressBar->setValue(ui->progressBar->value()+1);
+    if (ui->progressBar->value()<589) {
+        ui->progressBar->setValue(ui->progressBar->value()+589/50);
     }
     else timer2->stop();
 }
@@ -172,7 +226,7 @@ MainWindow::~MainWindow()
 void MainWindow::gradeBarUpdate()
 {
     std::string str;
-    std::ifstream OpenFile("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judgeProgress.txt");
+    std::ifstream OpenFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\judgeProgress.txt");
     OpenFile >> str;
     OpenFile.close();
     ui->progressBar->setValue(atoi(str.c_str()));
@@ -193,7 +247,9 @@ void MainWindow::grade()
     ui->progressBar->show();
     ui->progressBar->setValue(0);
     ui->estlabel->hide();
-    ui->progressBar->move(280,330);
+    //ui->progressBar->move(280,330);
+
+    ui->stackedWidget->setCurrentIndex(3);
 
     //play sound
     waitJudge();
@@ -207,21 +263,24 @@ void MainWindow::grade()
         ss << i;
         res = ss.str();
         ui->progressBar->setValue(ui->progressBar->value()+1);
-        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\data\\mpii\\images\\"+res+".jpg",his[i]);
-        cv::imwrite("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\input\\"+res+".jpg",his[i]);
+        cv::imwrite("C:\\Users\\jsjtx\\Desktop\\1\\data\\mpii\\images\\"+res+".jpg",his[i]);
+        cv::imwrite("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\input\\"+res+".jpg",his[i]);
     }
 
     //Start bar
 
-    std::ofstream OpenFile("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judgeProgress.txt");
+    std::ofstream OpenFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\judgeProgress.txt");
     OpenFile << "50";
     OpenFile.close();
     connect(timer3, SIGNAL(timeout()), this, SLOT(gradeBarUpdate()));
-    timer3->start(200);
+    timer3->start(50);
 
     //start judge
-    //system("C:\\Users\\cityscience\\Documents\\bowbow\\judge.bat");
-    WinExec("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\judge.bat",0);
+    //system("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge.bat");
+    if (cur_sport==1) WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\judge1.bat",0);
+    if (cur_sport==2) WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\judge2.bat",0);
+    if (cur_sport==3) WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\judge3.bat",0);
+    if (cur_sport==4) WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\judge4.bat",0);
 }
 
 void MainWindow::display()
@@ -232,12 +291,12 @@ void MainWindow::display()
     std::stringstream ss;
     ss << curPicIndex;
     res = ss.str();
-    cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
     QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
     int with = ui->estlabel->width();
-        int height = ui->estlabel->height();
-        //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
-        QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    int height = ui->estlabel->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
     ui->estlabel->setPixmap(fitpixmap);
 }
 
@@ -248,6 +307,8 @@ QString str2qstr(const std::string str)
 
 void MainWindow::report()
 {
+    ui->stackedWidget->setCurrentIndex(4);
+
     //stop timer
     timer3->stop();
     timer5->stop();
@@ -266,9 +327,9 @@ void MainWindow::report()
     ui->label_report_5->show();
     ui->label_report_6->show();
     ui->label_report_7->show();
-    ui->pushButton_5->show();
-    ui->pushButton_6->show();
-    ui->pushButton_7->show();
+    //ui->pushButton_5->show();
+    //ui->pushButton_6->show();
+    //ui->pushButton_7->show();
 
     //report 2 content (Review active)
     curPicIndex=1;
@@ -278,9 +339,9 @@ void MainWindow::report()
     //report 1 content
     std::string res,index,score;
     std::stringstream ss;
-    std::ifstream OpenFile("C:\\Users\\cityscience\\Documents\\bowbow\\judge\\bestpose.txt");
+    std::ifstream OpenFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\bestpose.txt");
     OpenFile >> score >> index;
-    cv::Mat frame=cv::imread("C:\\Users\\cityscience\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
     QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
     int with = ui->estlabel_2->width();
         int height = ui->estlabel_2->height();
@@ -301,7 +362,7 @@ void MainWindow::report()
     ui->label_report_7->setText(ui->label_report_7->text()+str2qstr(score));
 
     //report 3 content
-    QMovie *movie3 = new QMovie("C:\\Users\\cityscience\\Documents\\bowbow\\Resources\\greeting3.gif");
+    QMovie *movie3 = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting3.gif");
     movie3->setScaledSize(ui->standard->size());
     ui->standard->setMovie(movie3);
     movie3->start();
@@ -323,6 +384,8 @@ void MainWindow::adjustSpeed()
 
 void MainWindow::report1()
 {
+    ui->stackedWidget->setCurrentIndex(4);
+
     ui->estlabel->hide();
     ui->estlabel_2->show();
     ui->label_report_2->show();
@@ -337,6 +400,8 @@ void MainWindow::report1()
 
 void MainWindow::report2()
 {
+    ui->stackedWidget->setCurrentIndex(5);
+
     ui->estlabel->show();
     ui->estlabel_2->hide();
     ui->label_report_2->hide();
@@ -351,6 +416,8 @@ void MainWindow::report2()
 
 void MainWindow::report3()
 {
+    ui->stackedWidget->setCurrentIndex(6);
+
     ui->estlabel->hide();
     ui->estlabel_2->hide();
     ui->label_report_2->hide();
@@ -386,13 +453,14 @@ void MainWindow::testTwoCam()
 {
     cv::VideoCapture capture1(0);
     cv::VideoCapture capture2(1);
+
     while (1) {
         cv::Mat frame1,frame2;
         capture1 >> frame1;
         capture2 >> frame2;
         cv::imshow("1",frame1);
         cv::imshow("2",frame2);
-        cv::waitKey(30);
+        cv::waitKey(100);
     }
 }
 
