@@ -192,7 +192,7 @@
      </widget>
     </widget>
     <widget class="QWidget" name="report1">
-     <widget class="QGroupBox" name="groupBox">
+     <widget class="QWidget" name="widget" native="true">
       <property name="geometry">
        <rect>
         <x>230</x>
@@ -222,7 +222,7 @@
          <property name="font">
           <font>
            <family>微软雅黑</family>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
            <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
@@ -238,7 +238,7 @@
          <property name="font">
           <font>
            <family>微软雅黑</family>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
            <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
@@ -254,7 +254,7 @@
          <property name="font">
           <font>
            <family>微软雅黑</family>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
            <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
@@ -270,7 +270,7 @@
          <property name="font">
           <font>
            <family>微软雅黑</family>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
            <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
@@ -286,7 +286,7 @@
          <property name="font">
           <font>
            <family>微软雅黑</family>
-           <pointsize>16</pointsize>
+           <pointsize>12</pointsize>
            <weight>50</weight>
            <italic>false</italic>
            <bold>false</bold>
@@ -303,7 +303,7 @@
       <property name="geometry">
        <rect>
         <x>57</x>
-        <y>320</y>
+        <y>244</y>
         <width>824</width>
         <height>618</height>
        </rect>
@@ -341,9 +341,97 @@
        <string/>
       </property>
      </widget>
-     <zorder>groupBox</zorder>
+     <widget class="QLabel" name="poseA">
+      <property name="geometry">
+       <rect>
+        <x>41</x>
+        <y>1000</y>
+        <width>300</width>
+        <height>225</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Gadugi</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="poseB">
+      <property name="geometry">
+       <rect>
+        <x>590</x>
+        <y>1000</y>
+        <width>300</width>
+        <height>225</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Gadugi</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="poseD">
+      <property name="geometry">
+       <rect>
+        <x>590</x>
+        <y>1400</y>
+        <width>300</width>
+        <height>225</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Gadugi</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="poseC">
+      <property name="geometry">
+       <rect>
+        <x>41</x>
+        <y>1400</y>
+        <width>300</width>
+        <height>225</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Gadugi</family>
+       </font>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::PlainText</enum>
+      </property>
+     </widget>
+     <zorder>widget</zorder>
      <zorder>label_report</zorder>
      <zorder>estlabel_2</zorder>
+     <zorder>poseA</zorder>
+     <zorder>poseB</zorder>
+     <zorder>poseD</zorder>
+     <zorder>poseC</zorder>
     </widget>
     <widget class="QWidget" name="learn"/>
     <widget class="QWidget" name="report2">
@@ -670,6 +758,115 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="G4">
+    <property name="geometry">
+     <rect>
+      <x>699</x>
+      <y>1650</y>
+      <width>401</width>
+      <height>56</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>动作D扣分:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="G3">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>1650</y>
+      <width>401</width>
+      <height>56</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>动作C扣分：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="G2">
+    <property name="geometry">
+     <rect>
+      <x>699</x>
+      <y>1260</y>
+      <width>401</width>
+      <height>56</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>动作B扣分：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="G1">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>1260</y>
+      <width>401</width>
+      <height>56</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <italic>false</italic>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>动作A扣分：</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Gt">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>806</y>
+      <width>401</width>
+      <height>180</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>16</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>你的最终得分是：</string>
+    </property>
+   </widget>
    <zorder>bg</zorder>
    <zorder>bg_2</zorder>
    <zorder>stackedWidget</zorder>
@@ -691,6 +888,11 @@
    <zorder>progressBar</zorder>
    <zorder>score</zorder>
    <zorder>score_2</zorder>
+   <zorder>G4</zorder>
+   <zorder>G3</zorder>
+   <zorder>G2</zorder>
+   <zorder>G1</zorder>
+   <zorder>Gt</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

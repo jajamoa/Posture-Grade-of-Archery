@@ -73,6 +73,7 @@ private:
     cv::Mat frame[7];
     bool started=false,choosed=false,selftested=false;
     void loadFvideos();
+    void loadGymCap();
     int cirNum = 0, assCirNum = 0;
     std::string scores[50];
 };

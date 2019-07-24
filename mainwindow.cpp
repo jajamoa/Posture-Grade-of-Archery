@@ -97,6 +97,7 @@ void MainWindow::changeBg2(int index)
     ui->bg_2->setPixmap(fitpixmap);
 }
 
+
 void MainWindow::loadFvideos()
 {
     cv::Mat frame=cv::imread("C://Users//jsjtx//Desktop//bowbow//Resources//video//1.png");
@@ -188,6 +189,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->label_report->hide();
     ui->estlabel->hide();
     ui->est->hide();
+
     ui->label_report_2->hide();
     ui->estlabel_2->hide();
     ui->label_report_3->hide();
@@ -195,6 +197,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->label_report_5->hide();
     ui->label_report_6->hide();
     ui->label_report_7->hide();
+
     ui->pushButton_5->hide();
     ui->pushButton_6->hide();
     ui->pushButton_7->hide();
@@ -206,6 +209,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->label->hide();
     ui->score->hide();
     ui->score_2->hide();
+    //gymn
+    ui->poseA->hide();
+    ui->poseB->hide();
+    ui->poseC->hide();
+    ui->poseD->hide();
+    ui->G1->hide();
+    ui->G2->hide();
+    ui->G3->hide();
+    ui->G4->hide();
+    ui->Gt->hide();
 
     loadFvideos();
 
@@ -502,7 +515,9 @@ void MainWindow::traindisplay()
 
 void MainWindow::report()
 {
+    //changeBg2(10);
     changeBg(5);
+    //cur_sport=2;
     ui->bg_2->show();
     //stop timer
     timer3->stop();
@@ -516,16 +531,33 @@ void MainWindow::report()
     ui->label2->hide();
     ui->estlabel->hide();
     ui->est->hide();
-    ui->label_report_2->show();
     ui->estlabel_2->show();
-    ui->label_report_3->show();
-    ui->label_report_4->show();
-    ui->label_report_5->show();
-    ui->label_report_6->show();
-    ui->label_report_7->show();
+    if (cur_sport==1) {
+        ui->label_report_2->show();
+        ui->label_report_3->show();
+        ui->label_report_4->show();
+        ui->label_report_5->show();
+        ui->label_report_6->show();
+        ui->label_report_7->show();
+    }
+    if (cur_sport==2) {
+        loadGymCap();
+        ui->poseA->show();
+        ui->poseB->show();
+        ui->poseC->show();
+        ui->poseD->show();
+        ui->G1->show();
+        ui->G2->show();
+        ui->G3->show();
+        ui->G4->show();
+        ui->Gt->show();
+    }
+
     //ui->pushButton_5->show();
     //ui->pushButton_6->show();
     //ui->pushButton_7->show();
+
+
 
     //report 2 content (Review active)
     curPicIndex=1;
@@ -665,8 +697,8 @@ void MainWindow::report3()
 
 void MainWindow::savePics()
 {
-    cv::VideoCapture capture(0);
     //cv::VideoCapture capture(0);
+    cv::VideoCapture capture(1);
     while (1) {
         count++;
         cv::Mat frame;
@@ -734,4 +766,59 @@ QImage MainWindow::MatToQImage(cv::Mat mtx)
             return img;
         }
     }
+}
+
+
+void MainWindow::loadGymCap()
+{
+    std::string res,index,score;
+    std::stringstream ss;
+    std::ifstream OpenFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\bestpose.txt");
+    OpenFile >> score;
+    ui->Gt->setText(ui->Gt->text()+str2qstr(score+"/100"));
+
+    OpenFile >> score;
+    ui->G1->setText(ui->G1->text()+str2qstr(score));
+    OpenFile >> index;
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->poseA->width();
+    int height = ui->poseA->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->poseA->setPixmap(fitpixmap);
+
+    OpenFile >> score;
+    ui->G2->setText(ui->G2->text()+str2qstr(score));
+    OpenFile >> index;
+    frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
+    pixmap = QPixmap::fromImage(MatToQImage(frame));
+    with = ui->poseB->width();
+    height = ui->poseB->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->poseB->setPixmap(fitpixmap);
+
+    OpenFile >> score;
+    ui->G3->setText(ui->G3->text()+str2qstr(score));
+    OpenFile >> index;
+    frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
+    pixmap = QPixmap::fromImage(MatToQImage(frame));
+    with = ui->poseC->width();
+    height = ui->poseC->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->poseC->setPixmap(fitpixmap);
+
+    OpenFile >> score;
+    ui->G4->setText(ui->G4->text()+str2qstr(score));
+    OpenFile >> index;
+    frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+index+".png");
+    pixmap = QPixmap::fromImage(MatToQImage(frame));
+    with = ui->poseD->width();
+    height = ui->poseD->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->poseD->setPixmap(fitpixmap);
+    OpenFile.close();
 }
