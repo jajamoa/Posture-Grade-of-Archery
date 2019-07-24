@@ -47,6 +47,8 @@ public slots:
     void gymn();
     void shot();
     void badm();
+    void train();
+    void traindisplay();
 
 private:
     int cur_sport=1;
@@ -65,7 +67,7 @@ private:
     QTimer *timer10 = new QTimer(this); //?
     QSerialPort *serial;
     int curPicIndex;
-    QMovie *movie3;
+    QMovie *movie;
     cv::Mat frame[7];
     bool started=false,choosed=false,selftested=false;
     void loadFvideos();

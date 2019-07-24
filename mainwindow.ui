@@ -79,7 +79,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>7</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="welcome">
      <widget class="QLabel" name="label">
@@ -123,7 +123,7 @@
        </font>
       </property>
       <property name="text">
-       <string>体 育 类 型</string>
+       <string/>
       </property>
      </widget>
     </widget>
@@ -302,10 +302,10 @@
      <widget class="QLabel" name="estlabel_2">
       <property name="geometry">
        <rect>
-        <x>-30</x>
-        <y>310</y>
-        <width>931</width>
-        <height>591</height>
+        <x>57</x>
+        <y>320</y>
+        <width>824</width>
+        <height>618</height>
        </rect>
       </property>
       <property name="font">
@@ -338,18 +338,21 @@
        </font>
       </property>
       <property name="text">
-       <string>测 试 报 告</string>
+       <string/>
       </property>
      </widget>
+     <zorder>groupBox</zorder>
+     <zorder>label_report</zorder>
+     <zorder>estlabel_2</zorder>
     </widget>
     <widget class="QWidget" name="learn"/>
     <widget class="QWidget" name="report2">
      <widget class="QLabel" name="estlabel">
       <property name="geometry">
        <rect>
-        <x>50</x>
-        <y>230</y>
-        <width>851</width>
+        <x>127</x>
+        <y>320</y>
+        <width>824</width>
         <height>531</height>
        </rect>
       </property>
@@ -383,9 +386,11 @@
        </font>
       </property>
       <property name="text">
-       <string>测 试 回 顾</string>
+       <string/>
       </property>
      </widget>
+     <zorder>label_report_9</zorder>
+     <zorder>estlabel</zorder>
     </widget>
     <widget class="QWidget" name="report3">
      <widget class="QLabel" name="standard">
@@ -606,6 +611,7 @@
     </property>
    </widget>
    <zorder>bg</zorder>
+   <zorder>bg_2</zorder>
    <zorder>stackedWidget</zorder>
    <zorder>pushButton_2</zorder>
    <zorder>pushButton</zorder>
@@ -618,7 +624,6 @@
    <zorder>pose2</zorder>
    <zorder>pose3</zorder>
    <zorder>pose4</zorder>
-   <zorder>bg_2</zorder>
    <zorder>video1</zorder>
    <zorder>video2</zorder>
    <zorder>video3</zorder>

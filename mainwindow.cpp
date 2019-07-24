@@ -208,7 +208,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     loadFvideos();
 
     WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
-    sleep(1000);
+    sleep(100);
     connect(timer7, SIGNAL(timeout()), this, SLOT(checkM()));
     timer7->start(500);
 }
@@ -251,6 +251,10 @@ void MainWindow::checkM()
         if (cur_sport == 4) ui->video4->hide();
         timer9->stop();
         breakLoop();
+    }
+    if (temp=="6" && selftested && started && choosed) {
+        timer10->stop();
+        train();
     }
     OpenFile.close();
 }
@@ -381,8 +385,6 @@ void MainWindow::grade()
     //ui->progressBar->move(280,330);
     //ui->stackedWidget->setCurrentIndex(3);
 
-    ui->bg_2->hide();
-    sleep(100);
     changeBg2(10);
 
     //play sound
@@ -392,11 +394,12 @@ void MainWindow::grade()
 
     //save imgs
     if (!his.empty())for (int i=1;i<50;++i){
+        if (i==1) ui->bg_2->hide();
         std::string res;
         std::stringstream ss;
         ss << i;
         res = ss.str();
-        ui->progressBar->setValue(ui->progressBar->value()+1);
+        ui->progressBar->setValue(i);
         cv::imwrite("C:\\Users\\jsjtx\\Desktop\\1\\data\\mpii\\images\\"+res+".jpg",his[i]);
         cv::imwrite("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\input\\"+res+".jpg",his[i]);
     }
@@ -427,11 +430,28 @@ void MainWindow::display()
     res = ss.str();
     cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
     QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
-    int with = ui->estlabel->width();
-    int height = ui->estlabel->height();
+    int with = ui->estlabel_2->width();
+    int height = ui->estlabel_2->height();
     //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
     QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
-    ui->estlabel->setPixmap(fitpixmap);
+    ui->estlabel_2->setPixmap(fitpixmap);
+}
+
+void MainWindow::traindisplay()
+{
+    curPicIndex++;
+    if (curPicIndex==50) curPicIndex=1;
+    std::string res;
+    std::stringstream ss;
+    ss << curPicIndex;
+    res = ss.str();
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->video1->width();
+    int height = ui->video1->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->video1->setPixmap(fitpixmap);
 }
 
 QString str2qstr(const std::string str)
@@ -441,16 +461,13 @@ QString str2qstr(const std::string str)
 
 void MainWindow::report()
 {
-    ui->stackedWidget->setCurrentIndex(4);
-
-    ui->bg_2->show();
-    sleep(100);
     changeBg(5);
-
+    ui->bg_2->show();
     //stop timer
     timer3->stop();
     timer5->stop();
     //change GUI
+    ui->stackedWidget->setCurrentIndex(4);
     ui->progressBar->hide();
     ui->label_report->show();
     ui->label->hide();
@@ -500,10 +517,10 @@ void MainWindow::report()
     ui->label_report_7->setText(ui->label_report_7->text()+str2qstr(score));
 
     //report 3 content
-    QMovie *movie3 = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting3.gif");
-    movie3->setScaledSize(ui->standard->size());
-    ui->standard->setMovie(movie3);
-    movie3->start();
+    //QMovie *movie3 = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting3.gif");
+    //movie3->setScaledSize(ui->standard->size());
+    //ui->standard->setMovie(movie3);
+    //movie3->start();
     //connect(timer6, SIGNAL(timeout()), this, SLOT(adjustSpeed()));
     //timer6->start(200);
 
@@ -512,12 +529,32 @@ void MainWindow::report()
     connect(ui->pushButton_7, SIGNAL(clicked()), this, SLOT(report1()));
     connect(ui->pushButton_6, SIGNAL(clicked()), this, SLOT(report2()));
     connect(ui->pushButton_5, SIGNAL(clicked()), this, SLOT(report3()));
+
+    WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
+    sleep(100);
+    connect(timer10, SIGNAL(timeout()), this, SLOT(checkM()));
+    timer10->start(500);
+}
+
+void MainWindow::train()
+{
+    //QMovie *movie = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting3.gif");
+    //movie->setScaledSize(ui->video1->size());
+    //ui->video1->setMovie(movie);
+    //movie->start();
+    connect(timer6, SIGNAL(timeout()), this, SLOT(traindisplay()));
+    timer6->start(200);
+
+    timer4->stop();
+    ui->estlabel_2->hide();
+    ui->bg_2->hide();
+    ui->video1->show();
 }
 
 void MainWindow::adjustSpeed()
 {
-    if (ui->standard->isVisible())
-        movie3->setSpeed(100);
+    if (ui->video1->isVisible())
+        movie->setSpeed(100);
 }
 
 void MainWindow::report1()
