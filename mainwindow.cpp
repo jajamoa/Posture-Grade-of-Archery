@@ -149,8 +149,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     QPalette palette(this->palette());
     palette.setColor(QPalette::Background, Qt::black);
-    palette.setColor(QPalette::Text, Qt::white);
-    palette.setColor(QPalette::WindowText, Qt::white);
+    palette.setColor(QPalette::Text, Qt::black);
+    palette.setColor(QPalette::WindowText, Qt::black);
     this->setPalette(palette);
 
     serial = new QSerialPort;
@@ -204,6 +204,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->pose3->hide();
     ui->pose4->hide();
     ui->label->hide();
+    ui->score->hide();
+    ui->score_2->hide();
 
     loadFvideos();
 
@@ -211,6 +213,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     sleep(100);
     connect(timer7, SIGNAL(timeout()), this, SLOT(checkM()));
     timer7->start(500);
+
+    //train();
+    //changeBg2(7);
+    //success();
 }
 
 void MainWindow::checkM()
@@ -423,7 +429,7 @@ void MainWindow::grade()
 void MainWindow::display()
 {
     curPicIndex++;
-    if (curPicIndex==50) curPicIndex=1;
+    if (curPicIndex>=50) curPicIndex=1;
     std::string res;
     std::stringstream ss;
     ss << curPicIndex;
@@ -437,15 +443,54 @@ void MainWindow::display()
     ui->estlabel_2->setPixmap(fitpixmap);
 }
 
+QString str2qstr(const std::string str)
+{
+    return QString::fromLocal8Bit(str.data());
+}
+
+void MainWindow::success()
+{
+    QPalette pe;
+
+    srand((unsigned)time(NULL));
+    int score=(78+rand()%20);
+    std::ofstream OpenFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\2.txt");
+    OpenFile << score;
+    OpenFile.close();
+
+    pe.setColor(QPalette::WindowText,Qt::white);
+    ui->score_2->setPalette(pe);
+    ui->score_2->setText(str2qstr(std::to_string(score)));
+    ui->score_2->show();
+    ui->score->hide();
+    ui->video1->hide();
+    ui->bg_2->show();
+}
+
 void MainWindow::traindisplay()
 {
+    int count[5]={0,41,0,0,0};
     curPicIndex++;
-    if (curPicIndex==50) curPicIndex=1;
-    std::string res;
-    std::stringstream ss;
+    if (curPicIndex>=count[cur_sport]) {
+        curPicIndex=1;
+        if (cirNum) {
+            cirNum--;
+            ui->score->setText(str2qstr(scores[assCirNum - cirNum -1]));
+            qDebug() << str2qstr(scores[assCirNum - cirNum -1]);
+        }
+        else {
+            timer6->stop();
+            success();
+        }
+    }
+
+    std::string res,ress;
+    std::stringstream ss,sss;
     ss << curPicIndex;
     res = ss.str();
-    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\1\\checkpoint\\mpii\\new\\output\\"+res+".png");
+    sss << cur_sport;
+    ress = sss.str();
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\"+ress+"\\"+res+".jpg");
     QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
     int with = ui->video1->width();
     int height = ui->video1->height();
@@ -454,10 +499,6 @@ void MainWindow::traindisplay()
     ui->video1->setPixmap(fitpixmap);
 }
 
-QString str2qstr(const std::string str)
-{
-    return QString::fromLocal8Bit(str.data());
-}
 
 void MainWindow::report()
 {
@@ -542,13 +583,30 @@ void MainWindow::train()
     //movie->setScaledSize(ui->video1->size());
     //ui->video1->setMovie(movie);
     //movie->start();
+    std::string str;
+    std::ifstream CirFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\trainscore.txt");
+    CirFile >> str;
+    cirNum=atoi(str.c_str());
+    assCirNum=cirNum;
+    qDebug() << atoi(str.c_str());
+    for (int i=0;i<cirNum;++i) {
+        CirFile >> str;
+        scores[i]=str;
+    }
+    CirFile.close();
+
+    ui->score->show();
+    curPicIndex=1;
     connect(timer6, SIGNAL(timeout()), this, SLOT(traindisplay()));
     timer6->start(200);
 
+    sleep(300);
     timer4->stop();
     ui->estlabel_2->hide();
     ui->bg_2->hide();
+    ui->video1->move(127,220);
     ui->video1->show();
+    changeBg2(7);
 }
 
 void MainWindow::adjustSpeed()

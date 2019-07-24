@@ -563,7 +563,7 @@
      <rect>
       <x>127</x>
       <y>320</y>
-      <width>824</width>
+      <width>827</width>
       <height>1446</height>
      </rect>
     </property>
@@ -576,7 +576,7 @@
      <rect>
       <x>127</x>
       <y>320</y>
-      <width>824</width>
+      <width>827</width>
       <height>1446</height>
      </rect>
     </property>
@@ -589,7 +589,7 @@
      <rect>
       <x>127</x>
       <y>320</y>
-      <width>824</width>
+      <width>827</width>
       <height>1446</height>
      </rect>
     </property>
@@ -602,12 +602,72 @@
      <rect>
       <x>127</x>
       <y>320</y>
-      <width>824</width>
+      <width>827</width>
       <height>1446</height>
      </rect>
     </property>
     <property name="text">
      <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="score">
+    <property name="geometry">
+     <rect>
+      <x>466</x>
+      <y>1673</y>
+      <width>151</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>36</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::PlainText</enum>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="score_2">
+    <property name="geometry">
+     <rect>
+      <x>624</x>
+      <y>423</y>
+      <width>147</width>
+      <height>96</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>微软雅黑</family>
+      <pointsize>24</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::PlainText</enum>
+    </property>
+    <property name="scaledContents">
+     <bool>false</bool>
     </property>
    </widget>
    <zorder>bg</zorder>
@@ -629,6 +689,8 @@
    <zorder>video3</zorder>
    <zorder>video4</zorder>
    <zorder>progressBar</zorder>
+   <zorder>score</zorder>
+   <zorder>score_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

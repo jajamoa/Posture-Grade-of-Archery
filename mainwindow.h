@@ -8,6 +8,7 @@
 #include <QtSerialPort/QSerialPortInfo>
 #include "string.h"
 #include "Windows.h"
+#include <fstream>
 
 namespace Ui {
 class MainWindow;
@@ -49,6 +50,7 @@ public slots:
     void badm();
     void train();
     void traindisplay();
+    void success();
 
 private:
     int cur_sport=1;
@@ -71,6 +73,8 @@ private:
     cv::Mat frame[7];
     bool started=false,choosed=false,selftested=false;
     void loadFvideos();
+    int cirNum = 0, assCirNum = 0;
+    std::string scores[50];
 };
 
 #endif // MAINWINDOW_H
