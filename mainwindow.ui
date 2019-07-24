@@ -79,7 +79,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="welcome">
      <widget class="QLabel" name="label">
@@ -172,10 +172,10 @@
      <widget class="QLabel" name="est">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>300</x>
         <y>30</y>
-        <width>335</width>
-        <height>143</height>
+        <width>251</width>
+        <height>61</height>
        </rect>
       </property>
       <property name="font">
@@ -540,6 +540,19 @@
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="bg_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1080</width>
+      <height>1920</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
    <zorder>bg</zorder>
    <zorder>stackedWidget</zorder>
    <zorder>pushButton_2</zorder>
@@ -554,6 +567,7 @@
    <zorder>pose3</zorder>
    <zorder>pose4</zorder>
    <zorder>progressBar</zorder>
+   <zorder>bg_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -561,7 +575,7 @@
      <x>0</x>
      <y>0</y>
      <width>1080</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuMode">

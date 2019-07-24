@@ -24,8 +24,11 @@ public:
     LPCWSTR stringToLPCWSTR(std::string orig);
     void savePics();
     void changeBg(int index);
+    void changeBg2(int index);
 
 public slots:
+    void waitSelection();
+    void checkM();
     void greeting();
     void waitReady();
     void breakLoop();
@@ -56,9 +59,11 @@ private:
     QTimer *timer4 = new QTimer(this);
     QTimer *timer5 = new QTimer(this);
     QTimer *timer6 = new QTimer(this);
+    QTimer *timer7 = new QTimer(this); //开始信号
     QSerialPort *serial;
     int curPicIndex;
     QMovie *movie3;
+    cv::Mat frame[7];
 };
 
 #endif // MAINWINDOW_H

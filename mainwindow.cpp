@@ -49,22 +49,22 @@ void sleep(unsigned int msec)
 void MainWindow::bow()
 {
     cur_sport=1;
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 void MainWindow::gymn()
 {
     cur_sport=2;
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 void MainWindow::shot()
 {
     cur_sport=3;
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 void MainWindow::badm()
 {
     cur_sport=4;
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(3);
 }
 
 void MainWindow::changeBg(int index)
@@ -80,6 +80,21 @@ void MainWindow::changeBg(int index)
     //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
     QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
     ui->bg->setPixmap(fitpixmap);
+}
+
+void MainWindow::changeBg2(int index)
+{
+    char temp[] = "";
+    sprintf(temp,"%d",index);
+    std::string si(temp);
+    ui->stackedWidget->setCurrentIndex(0);
+    cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\bg\\"+si+".jpg");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->bg->width();
+    int height = ui->bg->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->bg_2->setPixmap(fitpixmap);
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -105,13 +120,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     count = 0;
     ui->setupUi(this);
-    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(greeting()));
+    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(waitSelection()));
     connect(ui->pushButton_2,SIGNAL(clicked()),this,SLOT(breakLoop()));
     connect(ui->pushButton_3,SIGNAL(clicked()),this,SLOT(report()));
     connect(ui->pushButton_4,SIGNAL(clicked()),this,SLOT(grade()));
     //connect(ui->pushButton_8, SIGNAL(clicked()), this, SLOT(testTwoCam()));
 
-    changeBg(4);
+    changeBg(1);
+    ui->bg_2->hide();
+    changeBg2(2);
 
     QMovie *movie1 = new QMovie("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\greeting1.gif");
     ui->label1->setMovie(movie1);
@@ -121,7 +138,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     movie2->start();
     ui->progressBar->setMaximum(589);
     ui->progressBar->setValue(0);
-    //ui->progressBar->hide();
+    ui->progressBar->hide();
     ui->label1->hide();
     ui->label2->hide();
     ui->pushButton->hide();
@@ -147,15 +164,42 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->pose3->hide();
     ui->pose4->hide();
     ui->label->hide();
+    WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
+    sleep(2000);
+    connect(timer7, SIGNAL(timeout()), this, SLOT(checkM()));
+    timer7->start(1000);
 }
 
+void MainWindow::checkM()
+{
+    std::string temp;
+    std::ifstream OpenFile("C://Users//jsjtx//Desktop//bowbow//Message//1.txt");
+    OpenFile >> temp;
+    if (temp=="0") {
+        timer7->stop();
+        waitSelection();
+    }
+    OpenFile.close();
+}
+
+void MainWindow::waitSelection()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->bg_2->show();
+    int mode;
+
+
+    //read
+    if (mode==1) bow();
+}
 
 void MainWindow::greeting()
 {
-    ui->stackedWidget->setCurrentIndex(1);
+
     ui->label_2->setText("射箭");
     PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\1greeting.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(5*1000);
+    /*
     connect(timer, SIGNAL(timeout()), this, SLOT(waitReady()));
     timer->start(7000);
 
@@ -181,7 +225,7 @@ void MainWindow::greeting()
     serial->clear();
     serial->close();
     serial->deleteLater();
-
+    */
     breakLoop();
 }
 
@@ -432,7 +476,8 @@ void MainWindow::report3()
 
 void MainWindow::savePics()
 {
-    cv::VideoCapture capture(0);
+    cv::VideoCapture capture(1);
+    //cv::VideoCapture capture(0);
     while (1) {
         count++;
         cv::Mat frame;
