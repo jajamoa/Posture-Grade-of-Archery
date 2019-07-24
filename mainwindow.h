@@ -60,10 +60,15 @@ private:
     QTimer *timer5 = new QTimer(this);
     QTimer *timer6 = new QTimer(this);
     QTimer *timer7 = new QTimer(this); //开始信号
+    QTimer *timer8 = new QTimer(this); //等待选择
+    QTimer *timer9 = new QTimer(this); //开始自测
+    QTimer *timer10 = new QTimer(this); //?
     QSerialPort *serial;
     int curPicIndex;
     QMovie *movie3;
     cv::Mat frame[7];
+    bool started=false,choosed=false,selftested=false;
+    void loadFvideos();
 };
 
 #endif // MAINWINDOW_H

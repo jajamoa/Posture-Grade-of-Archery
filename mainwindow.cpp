@@ -49,22 +49,22 @@ void sleep(unsigned int msec)
 void MainWindow::bow()
 {
     cur_sport=1;
-    ui->stackedWidget->setCurrentIndex(3);
+    greeting();
 }
 void MainWindow::gymn()
 {
     cur_sport=2;
-    ui->stackedWidget->setCurrentIndex(3);
+    greeting();
 }
 void MainWindow::shot()
 {
     cur_sport=3;
-    ui->stackedWidget->setCurrentIndex(3);
+    greeting();
 }
 void MainWindow::badm()
 {
     cur_sport=4;
-    ui->stackedWidget->setCurrentIndex(3);
+    greeting();
 }
 
 void MainWindow::changeBg(int index)
@@ -95,6 +95,46 @@ void MainWindow::changeBg2(int index)
     //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
     QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
     ui->bg_2->setPixmap(fitpixmap);
+}
+
+void MainWindow::loadFvideos()
+{
+    cv::Mat frame=cv::imread("C://Users//jsjtx//Desktop//bowbow//Resources//video//1.png");
+    QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+    int with = ui->video1->width();
+    int height = ui->video1->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->video1->setPixmap(fitpixmap);
+
+    frame=cv::imread("C://Users//jsjtx//Desktop//bowbow//Resources//video//2.png");
+    pixmap = QPixmap::fromImage(MatToQImage(frame));
+    with = ui->video2->width();
+    height = ui->video2->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->video2->setPixmap(fitpixmap);
+
+    frame=cv::imread("C://Users//jsjtx//Desktop//bowbow//Resources//video//3.png");
+    pixmap = QPixmap::fromImage(MatToQImage(frame));
+    with = ui->video3->width();
+    height = ui->video3->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->video3->setPixmap(fitpixmap);
+
+    frame=cv::imread("C://Users//jsjtx//Desktop//bowbow//Resources//video//4.png");
+    pixmap = QPixmap::fromImage(MatToQImage(frame));
+    with = ui->video4->width();
+    height = ui->video4->height();
+    //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+    fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+    ui->video4->setPixmap(fitpixmap);
+
+    ui->video1->hide();
+    ui->video2->hide();
+    ui->video3->hide();
+    ui->video4->hide();
 }
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -164,10 +204,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->pose3->hide();
     ui->pose4->hide();
     ui->label->hide();
+
+    loadFvideos();
+
     WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
-    sleep(2000);
+    sleep(1000);
     connect(timer7, SIGNAL(timeout()), this, SLOT(checkM()));
-    timer7->start(1000);
+    timer7->start(500);
 }
 
 void MainWindow::checkM()
@@ -175,9 +218,39 @@ void MainWindow::checkM()
     std::string temp;
     std::ifstream OpenFile("C://Users//jsjtx//Desktop//bowbow//Message//1.txt");
     OpenFile >> temp;
-    if (temp=="0") {
+    if (temp=="0" && !started) {
+        started = true;
         timer7->stop();
         waitSelection();
+    }
+    if (temp=="3" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        bow();
+    }
+    if (temp=="1" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        badm();
+    }
+    if (temp=="2" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        gymn();
+    }
+    if (temp=="4" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        shot();
+    }
+    if (temp=="5" && !selftested && started && choosed) {
+        selftested = true;
+        if (cur_sport == 1) ui->video1->hide();
+        if (cur_sport == 2) ui->video2->hide();
+        if (cur_sport == 3) ui->video3->hide();
+        if (cur_sport == 4) ui->video4->hide();
+        timer9->stop();
+        breakLoop();
     }
     OpenFile.close();
 }
@@ -186,19 +259,31 @@ void MainWindow::waitSelection()
 {
     ui->stackedWidget->setCurrentIndex(1);
     ui->bg_2->show();
+    sleep(100);
+    changeBg(3);
     int mode;
-
-
-    //read
-    if (mode==1) bow();
+    WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
+    sleep(100);
+    connect(timer8, SIGNAL(timeout()), this, SLOT(checkM()));
+    timer8->start(500);
 }
 
 void MainWindow::greeting()
 {
-
-    ui->label_2->setText("射箭");
+    ui->bg_2->hide();
+    if (cur_sport == 1) ui->video1->show();
+    if (cur_sport == 2) ui->video2->show();
+    if (cur_sport == 3) ui->video3->show();
+    if (cur_sport == 4) ui->video4->show();
+    sleep(100);
+    changeBg2(8);
+    WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
+    sleep(100);
+    connect(timer9, SIGNAL(timeout()), this, SLOT(checkM()));
+    timer9->start(500);
+    //ui->label_2->setText("射箭");
     PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\1greeting.wav"),NULL,SND_FILENAME | SND_ASYNC);
-    sleep(5*1000);
+    //sleep(5*1000);
     /*
     connect(timer, SIGNAL(timeout()), this, SLOT(waitReady()));
     timer->start(7000);
@@ -226,7 +311,7 @@ void MainWindow::greeting()
     serial->close();
     serial->deleteLater();
     */
-    breakLoop();
+    //breakLoop();
 }
 
 void MainWindow::waitReady()
@@ -241,16 +326,18 @@ void MainWindow::waitJudge()
 
 void MainWindow::breakLoop()
 {
-    ui->stackedWidget->setCurrentIndex(2);
     timer->stop();
-    ui->label1->show();
-    ui->label2->show();
+    ui->bg_2->show();
     ui->progressBar->show();
+    sleep(100);
+    changeBg(9);
+    //ui->label1->show();
+    //ui->label2->show();
     PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(7000);
     connect(timer2, SIGNAL(timeout()), this, SLOT(barUpdate()));
     timer2->start(200);
-    ui->stackedWidget->setCurrentIndex(3);
+    //ui->stackedWidget->setCurrentIndex(3);
     savePics();
 }
 
@@ -275,7 +362,7 @@ void MainWindow::gradeBarUpdate()
     OpenFile.close();
     ui->progressBar->setValue(atoi(str.c_str()));
     if ((atoi(str.c_str()))==589) {
-        ui->progressBar->move(280,500);
+        ui->progressBar->hide();
         report();
     }
 }
@@ -283,17 +370,20 @@ void MainWindow::gradeBarUpdate()
 void MainWindow::grade()
 {
     //Change GUI
-    ui->label->hide();
-    ui->label2->hide();
-    ui->label1->hide();
-    ui->est->show();
-    ui->estlabel->show();
-    ui->progressBar->show();
-    ui->progressBar->setValue(0);
-    ui->estlabel->hide();
+    //ui->label->hide();
+    //ui->label2->hide();
+    //ui->label1->hide();
+    //ui->est->show();
+    //ui->estlabel->show();
+    //ui->progressBar->show();
+    //ui->progressBar->setValue(0);
+    //ui->estlabel->hide();
     //ui->progressBar->move(280,330);
+    //ui->stackedWidget->setCurrentIndex(3);
 
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->bg_2->hide();
+    sleep(100);
+    changeBg2(10);
 
     //play sound
     waitJudge();
@@ -352,6 +442,10 @@ QString str2qstr(const std::string str)
 void MainWindow::report()
 {
     ui->stackedWidget->setCurrentIndex(4);
+
+    ui->bg_2->show();
+    sleep(100);
+    changeBg(5);
 
     //stop timer
     timer3->stop();
@@ -476,7 +570,7 @@ void MainWindow::report3()
 
 void MainWindow::savePics()
 {
-    cv::VideoCapture capture(1);
+    cv::VideoCapture capture(0);
     //cv::VideoCapture capture(0);
     while (1) {
         count++;
