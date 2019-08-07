@@ -1,0 +1,1 @@
+call python C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.py

@@ -230,6 +230,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //train();
     //changeBg2(7);
     //success();
+<<<<<<< HEAD
 }
 
 void MainWindow::checkM()
@@ -289,10 +290,74 @@ void MainWindow::waitSelection()
     sleep(100);
     connect(timer8, SIGNAL(timeout()), this, SLOT(checkM()));
     timer8->start(500);
+=======
+}
+
+void MainWindow::checkM()
+{
+    std::string temp;
+    std::ifstream OpenFile("C://Users//jsjtx//Desktop//bowbow//Message//1.txt");
+    OpenFile >> temp;
+    if (temp=="0" && !started) {
+        started = true;
+        timer7->stop();
+        waitSelection();
+    }
+    if (temp=="3" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        bow();
+    }
+    if (temp=="1" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        badm();
+    }
+    if (temp=="2" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        gymn();
+    }
+    if (temp=="4" && !choosed && started) {
+        choosed = true;
+        timer8->stop();
+        shot();
+    }
+    if (temp=="5" && !selftested && started && choosed) {
+        selftested = true;
+        if (cur_sport == 1) ui->video1->hide();
+        if (cur_sport == 2) ui->video2->hide();
+        if (cur_sport == 3) ui->video3->hide();
+        if (cur_sport == 4) ui->video4->hide();
+        timer9->stop();
+        breakLoop();
+    }
+    if (temp=="6" && selftested && started && choosed) {
+        timer10->stop();
+        train();
+    }
+    OpenFile.close();
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
+}
+
+void MainWindow::waitSelection()
+{
+<<<<<<< HEAD
+=======
+    ui->stackedWidget->setCurrentIndex(1);
+    ui->bg_2->show();
+    sleep(100);
+    changeBg(3);
+    int mode;
+    WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
+    sleep(100);
+    connect(timer8, SIGNAL(timeout()), this, SLOT(checkM()));
+    timer8->start(500);
 }
 
 void MainWindow::greeting()
 {
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     ui->bg_2->hide();
     if (cur_sport == 1) ui->video1->show();
     if (cur_sport == 2) ui->video2->show();
@@ -310,8 +375,6 @@ void MainWindow::greeting()
     /*
     connect(timer, SIGNAL(timeout()), this, SLOT(waitReady()));
     timer->start(7000);
-
-
     int X=0;
     QByteArray buf;
     buf = serial->readAll();
@@ -356,8 +419,13 @@ void MainWindow::breakLoop()
     changeBg(9);
     //ui->label1->show();
     //ui->label2->show();
+<<<<<<< HEAD
+    //PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
+    sleep(2000);
+=======
     PlaySound(TEXT("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\3start.wav"),NULL,SND_FILENAME | SND_ASYNC);
     sleep(7000);
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     connect(timer2, SIGNAL(timeout()), this, SLOT(barUpdate()));
     timer2->start(200);
     //ui->stackedWidget->setCurrentIndex(3);
@@ -471,18 +539,47 @@ void MainWindow::success()
     OpenFile << score;
     OpenFile.close();
 
+<<<<<<< HEAD
+    if (cur_sport==1)
+        for (int i=1;i<=28;++i){
+        ui->score->hide();
+        std::string res;
+        std::stringstream ss;
+        ss << i;
+        res = ss.str();
+        cv::Mat frame=cv::imread("C:\\Users\\jsjtx\\Desktop\\bowbow\\Resources\\3\\"+res+".jpg");
+        QPixmap pixmap = QPixmap::fromImage(MatToQImage(frame));
+        int with = ui->video1->width();
+        int height = ui->video1->height();
+        //QPixmap fitpixmap = pixmap.scaled(with, height, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);  // 饱满填充
+        QPixmap fitpixmap = pixmap.scaled(with, height, Qt::KeepAspectRatio, Qt::SmoothTransformation);  // 按比例缩放
+        ui->video1->setPixmap(fitpixmap);
+        if (i==1) sleep(2000);
+        else sleep(200);
+    }
+
+=======
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     pe.setColor(QPalette::WindowText,Qt::white);
     ui->score_2->setPalette(pe);
     ui->score_2->setText(str2qstr(std::to_string(score)));
     ui->score_2->show();
+<<<<<<< HEAD
+
+=======
     ui->score->hide();
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     ui->video1->hide();
     ui->bg_2->show();
 }
 
 void MainWindow::traindisplay()
 {
+<<<<<<< HEAD
+    int count[5]={0,42,67,0,44};
+=======
     int count[5]={0,41,0,0,0};
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     curPicIndex++;
     if (curPicIndex>=count[cur_sport]) {
         curPicIndex=1;
@@ -532,7 +629,11 @@ void MainWindow::report()
     ui->estlabel->hide();
     ui->est->hide();
     ui->estlabel_2->show();
+<<<<<<< HEAD
+    if (cur_sport!=2) {
+=======
     if (cur_sport==1) {
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
         ui->label_report_2->show();
         ui->label_report_3->show();
         ui->label_report_4->show();
@@ -603,8 +704,12 @@ void MainWindow::report()
     connect(ui->pushButton_6, SIGNAL(clicked()), this, SLOT(report2()));
     connect(ui->pushButton_5, SIGNAL(clicked()), this, SLOT(report3()));
 
+<<<<<<< HEAD
+    //WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
+=======
     WinExec("C:\\Users\\jsjtx\\Desktop\\bowbow\\Message\\init.bat",0);
     sleep(100);
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     connect(timer10, SIGNAL(timeout()), this, SLOT(checkM()));
     timer10->start(500);
 }
@@ -615,6 +720,19 @@ void MainWindow::train()
     //movie->setScaledSize(ui->video1->size());
     //ui->video1->setMovie(movie);
     //movie->start();
+<<<<<<< HEAD
+    ui->poseA->hide();
+    ui->poseB->hide();
+    ui->poseC->hide();
+    ui->poseD->hide();
+    ui->G1->hide();
+    ui->G2->hide();
+    ui->G3->hide();
+    ui->G4->hide();
+    ui->Gt->hide();
+
+=======
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
     std::string str;
     std::ifstream CirFile("C:\\Users\\jsjtx\\Desktop\\bowbow\\judge\\trainscore.txt");
     CirFile >> str;
@@ -630,7 +748,11 @@ void MainWindow::train()
     ui->score->show();
     curPicIndex=1;
     connect(timer6, SIGNAL(timeout()), this, SLOT(traindisplay()));
+<<<<<<< HEAD
+    timer6->start(150);
+=======
     timer6->start(200);
+>>>>>>> c19df2611b687bf86379dddedffbdaa30ebe5b0e
 
     sleep(300);
     timer4->stop();

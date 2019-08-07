@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <title>page-1</title>
+    </head>
+    <body>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <div id="app">
+            <h1>111</h1>
+            <p>2222</p>
+            <p> {{ msg }} </p>
+            <button @click="get_param">button</button>
+        </div>
+        <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                msg: "以下是文明用语",
+                id: 1
+            },
+            methods: {
+                get_param: function () {
+                    axios.get('http://192.168.31.164:5000/get_param', {
+                        params: {
+                            id: this.id
+                        }
+                    })
+                    .then(this.handle_resp)
+                    {
+
+                    }
+                },
+                handle_resp: function (response) {
+                    this.msg = response.data.msg
+                    console.log(this.msg)
+                    console.log(this.id)
+                    this.id += 1
+                }
+            }
+        })
+        </script>
+
+    <div id="app-5">
+            <p>{{ message }}</p>
+            <button v-on:click="reverseMessage">反转消息</button>
+    </div>
+    <script>
+        var app5 = new Vue({
+          el: '#app-5',
+          data: {
+            message: 'Hello Vue.js!'
+          },
+          methods: {
+            reverseMessage: function () {
+              this.message = this.message.split('').reverse().join('')
+            }
+          }
+        })
+    </script>
+    </body>
+
+</html>

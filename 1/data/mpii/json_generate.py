@@ -1,2 +1,0 @@
-for i in range(1,500):
-    print(r'{"dataset": "MPI","isValidation": 1.000,"img_paths": "'+str(i)+'.jpg","img_width": 440.000,"img_height": 262.000,"objpos": [ 210.000, 120.000 ],"scale_provided_other": 2.472,"objpos_other": [ 952.000, 222.000 ],"scale_provided": 3.021,"annolist_index": 5.000,"people_index": 1.000,"numOtherPeople": 1.000},')
